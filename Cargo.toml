@@ -2,12 +2,10 @@
 name = "yeet-installer"
 version = "0.1.0"
 edition = "2024"
-# categories.workspace = true
-# edition.workspace = true
-# repository.workspace = true
-# keywords.workspace = true
-# license.workspace = true
-# readme.workspace = true
+repository = "https://github.com/yeet-rs/installer"
+keywords = ["nix", "deployment", "installer"]
+license = "AGPL-3.0-or-later"
+readme = "README"
 
 [dependencies]
 tracing-appender = "0.2.5"
