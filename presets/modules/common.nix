@@ -55,7 +55,7 @@
     sounds.enable = false;
   };
 
-  nixpkgs.hostPlatform = "x86_64-linux";
+  nixpkgs.hostPlatform = builtins.currentSystem;
 
   system.stateVersion = "26.05";
 

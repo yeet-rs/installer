@@ -1,0 +1,31 @@
+name: Installer Build
+
+on:
+  push:
+    branches:
+      - "main"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Just build installer
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-26.04-arm, ubuntu-26.04]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: cachix/install-nix-action@v31
+      - uses: DeterminateSystems/magic-nix-cache-action@v13
+      - run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+      - run: nix build -f . installer.config.system.build.image
+      - name: Upload Assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload installer result/yeet-installer-* --repo "$GITHUB_REPOSITORY" --clobber

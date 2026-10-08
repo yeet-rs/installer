@@ -43,7 +43,7 @@ in
 
   image.repart = {
     enable = true;
-    name = "yeet-installer";
+    name = "yeet-installer-${builtins.currentSystem}";
 
     partitions = {
       "10-esp" = {

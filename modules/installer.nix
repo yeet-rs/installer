@@ -3,12 +3,13 @@
   lib,
   modulesPath,
   config,
+
   ...
 }:
 let
 
   preset = import (pkgs.path + "/nixos/lib/eval-config.nix") {
-    system = "x86_64-linux";
+    system = builtins.currentSystem;
     modules = [
       ../presets/modules/disko.nix
       ../presets/modules/yeet.nix
@@ -54,7 +55,7 @@ in
     "${modulesPath}/installer/cd-dvd/channel.nix"
   ];
 
-  nixpkgs.hostPlatform = "x86_64-linux";
+  nixpkgs.hostPlatform = builtins.currentSystem;
   system.stateVersion = "26.05"; # initial nixos state
 
   nixpkgs.config.allowUnfree = true;
