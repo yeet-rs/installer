@@ -10,10 +10,10 @@ let
   preset = import (pkgs.path + "/nixos/lib/eval-config.nix") {
     system = "x86_64-linux";
     modules = [
-      ./presets/modules/disko.nix
-      ./presets/modules/yeet.nix
-      ./presets/modules/common.nix
-      ./presets/disko/btrfs-subvolumes.nix
+      ../presets/modules/disko.nix
+      ../presets/modules/yeet.nix
+      ../presets/modules/common.nix
+      ../presets/disko/btrfs-subvolumes.nix
     ];
   };
 

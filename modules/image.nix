@@ -63,7 +63,7 @@ in
 
       "20-config" = {
         contents = {
-          "/".source = ./presets;
+          "/".source = ../presets;
         };
         repartConfig = {
           Type = "linux-generic";
