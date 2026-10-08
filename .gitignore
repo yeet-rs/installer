@@ -12,3 +12,4 @@ devenv.local.yaml
 target
 result
 *.qcow2
+nixos-efi-vars.fd

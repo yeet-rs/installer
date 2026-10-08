@@ -20,7 +20,7 @@ pub fn build(modules: &[String], attr: &str) -> Result<PathBuf> {
         "import <nixpkgs/nixos/lib/eval-config.nix> {{ system = null; modules = [ {} ]; }}",
         modules
             .into_iter()
-            .map(|module| format!("{}.nix", module))
+            .map(|module| format!("{} ", module))
             .collect::<Vec<_>>()
             .join(" ")
     );

@@ -158,7 +158,6 @@ fn manual_preset() -> Result<Vec<String>> {
         .flat_map(|dir| dir.ok())
         .map(|p| p.path().to_string_lossy().into_owned())
         .map(|path| path.trim_start_matches("/etc/yeet/").to_owned())
-        .map(|path| path.trim_end_matches(".nix").to_owned())
         .map(|path| (path.clone(), path, ""))
         .collect::<Vec<_>>();
     Ok(
