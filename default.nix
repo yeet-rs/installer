@@ -3,10 +3,10 @@
 
 }:
 let
-  pins = import ./npins;
-  pkgs = import pins.nixpkgs { inherit system; };
+  sources = import ./presets/npins;
+  pkgs = import sources.nixpkgs { inherit system; };
 
-  cargo_nix = pkgs.callPackage ./Cargo.nix {};
+  cargo_nix = pkgs.callPackage ./Cargo.nix { };
 
   nixos =
     nixpkgs: configuration:
@@ -22,7 +22,7 @@ rec {
   packages = {
     installer = cargo_nix.rootCrate.build;
   };
-  installer = nixos pins.nixpkgs {
+  installer = nixos sources.nixpkgs {
     imports = [ ./modules/installer.nix ];
     nixpkgs.overlays = [
       (final: prev: {

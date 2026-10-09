@@ -3,15 +3,11 @@
   ...
 }:
 let
-  version = "0.16.1";
-  yeetSrc = fetchTarball {
-    url = "https://github.com/yeet-rs/yeet/archive/refs/tags/v${version}.tar.gz";
-    sha256 = "sha256-oAnX9skjandoB90uAKCfc4uXe22ajkacOlJGVMrcOuE=";
-  };
-  yeet = import yeetSrc { inherit pkgs; };
+  sources = import ../npins;
+  yeet = import sources.yeet { inherit pkgs; };
 in
 {
-  system.extraDependencies = [ yeetSrc ];
+  system.extraDependencies = [ sources.yeet ];
   imports = [
     yeet.nixosModules.yeet
   ];
@@ -31,7 +27,7 @@ in
 
   services.yeet = {
     enable = true;
-    server = "https://yeet.bsiag.com";
+    server = "https://yeetme.ch";
     facter = true;
   };
 

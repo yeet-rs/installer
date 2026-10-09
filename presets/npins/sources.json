@@ -1,0 +1,40 @@
+{
+  "pins": {
+    "disko": {
+      "type": "GitRelease",
+      "repository": {
+        "type": "GitHub",
+        "owner": "nix-community",
+        "repo": "disko"
+      },
+      "pre_releases": false,
+      "version_upper_bound": null,
+      "release_prefix": null,
+      "submodules": false,
+      "version": "v1.13.0",
+      "revision": "56ef5e72fec74b993ad0973b2dfa4eadeb48ba41",
+      "url": "https://api.github.com/repos/nix-community/disko/tarball/refs/tags/v1.13.0",
+      "hash": "sha256-CNzzBsRhq7gg4BMBuTDObiWDH/rFYHEuDRVOwCcwXw4="
+    },
+    "nixpkgs": {
+      "type": "Channel",
+      "name": "nixpkgs-unstable",
+      "url": "https://releases.nixos.org/nixpkgs/nixpkgs-26.11pre1087089.39ad350a0602/nixexprs.tar.xz",
+      "hash": "sha256-/4ezBOv6aldGab7qTb6ls3SDpgzG8kuuSqEAA9zEZ8E="
+    },
+    "yeet": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "yeet-rs",
+        "repo": "yeet"
+      },
+      "branch": "main",
+      "submodules": false,
+      "revision": "8c48758777ac159efa04719cad77533d1f3398e5",
+      "url": "https://github.com/yeet-rs/yeet/archive/8c48758777ac159efa04719cad77533d1f3398e5.tar.gz",
+      "hash": "sha256-YC0qdEZlA/x4MSVsaATN4xHTCD2NKRJjE4duzmMH8Bg="
+    }
+  },
+  "version": 7
+}

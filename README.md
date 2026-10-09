@@ -39,6 +39,12 @@ The modules defined in the Preset are built and then installed as your NixOS sys
 just os modules/common.nix modules/yeet.nix modules/disko.nix disko/btrfs-subvolumes.nix
 ```
 
+## Updating the installer
+
+After a lot of time has passed it may become inconvenient to install a system that is many generations older than the system you intend to install aftwards. Because of this the installer ships its own npins with the presets. This does not however modify the installer binary itself. Only the version of the Bootstrap system. If you want to install a new version of the installer there is currently no other way than to flash the stick new.
+
+Because the nixpkgs overlayfs is persistent it would be theoritcally possible to create an auto-updating installer in the future.
+
 ## Development
 
 Test the installer by running it in a vm:

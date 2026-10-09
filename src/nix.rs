@@ -17,7 +17,7 @@ pub fn build(modules: &[String], attr: &str) -> Result<PathBuf> {
     cliclack::log::remark(format!("Building {attr} with {modules:?}"))?;
     // --expr resolves relative paths against CWD. pin it down
     let expr = format!(
-        "import <nixpkgs/nixos/lib/eval-config.nix> {{ system = null; modules = [ {} ]; }}",
+        "import \"${{(import ./npins).nixpkgs}}/nixos/lib/eval-config.nix\" {{ system = null; modules = [ {} ]; }}",
         modules
             .into_iter()
             .map(|module| format!("{} ", module))

@@ -75,6 +75,7 @@ in
   environment.systemPackages = [
     pkgs.nix-output-monitor
     pkgs.yeet-installer
+    pkgs.npins
   ];
 
   nix.settings.experimental-features = [
