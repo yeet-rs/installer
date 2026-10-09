@@ -10,14 +10,16 @@ use std::{
 
 use color_eyre::{Result, eyre::bail};
 
+use rand::RngExt as _;
 use serde::Deserialize;
 use tempfile::NamedTempFile;
 use tracing::instrument;
 use tracing_subscriber::{layer::SubscriberExt as _, util::SubscriberInitExt as _};
 
-use crate::cache::Cache;
+use crate::{cache::Cache, eff_large_wordlist::EFF_LARGE_WORDLIST};
 
 mod cache;
+mod eff_large_wordlist;
 mod nix;
 
 #[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
@@ -45,7 +47,11 @@ fn nix_disko_attr() -> String {
 }
 
 fn default_cache() -> Vec<String> {
-    vec!["/etc/yeet/disko".to_owned(), "/etc/yeet/modules".to_owned()]
+    vec![
+        "/etc/yeet/disko".to_owned(),
+        "/etc/yeet/modules".to_owned(),
+        "/etc/yeet/npins".to_owned(),
+    ]
 }
 
 fn init_tracing() {
@@ -102,12 +108,14 @@ fn main() -> Result<()> {
     let disks = list_devices()?;
     let anchors = get_disko_anchors(&disko)?;
     let map = map_disko_anchors(anchors, disks)?;
-    let disko = replace_disko_devices(disko, map);
+    let disko = replace_disko_devices(disko, &map);
+    let disko = replace_disko_password(disko)?;
     run_disko(disko)?;
 
     // now after partitioning we need to build the system
     let system = cache.nix_build(&modules, "config.system.build.toplevel")?;
     nix::nixos_install(system)?;
+
     process::Command::new("systemctl").arg("reboot").status()?;
     Ok(())
 }
@@ -233,11 +241,49 @@ fn map_disko_anchors(
 
 /// replaces every `INSTALLER_DISK` with the corresponding disk
 #[instrument(ret)]
-fn replace_disko_devices(mut disko: String, map: HashMap<String, String>) -> String {
+fn replace_disko_devices(mut disko: String, map: &HashMap<String, String>) -> String {
     for (anchor, disk) in map {
         disko = disko.replace(&format!("INSTALLER_DISK_{anchor}"), &disk);
     }
     disko
+}
+
+/// replaces every `INSTALLER_LUKS_PASSWORD` with a new password
+/// retruns disko, wordlist
+#[instrument(ret)]
+fn replace_disko_password(disko: String) -> Result<String> {
+    if !disko.contains("/INSTALLER_LUKS_PASSWORD") {
+        return Ok(disko);
+    }
+
+    let mut wordlist = String::new();
+    for _ in 0..3 {
+        let i = rand::rng().random_range(0..7777);
+        wordlist.push_str(EFF_LARGE_WORDLIST[i]);
+        wordlist.push(' ');
+    }
+    wordlist.pop();
+
+    let tmp = NamedTempFile::new()?;
+    let (mut file, path) = tmp.keep()?;
+    file.write_all(wordlist.as_bytes())?;
+
+    loop {
+        let saved = cliclack::confirm(format!(
+            "Yeet has detected a luks password requirement.
+Write it down. You will need it to boot.
+This is your luks password: `{wordlist}`
+Did you write it down?"
+        ))
+        .initial_value(true)
+        .interact()?;
+
+        if saved {
+            break;
+        }
+    }
+
+    Ok(disko.replace("/INSTALLER_LUKS_PASSWORD", &format!("{path:?}")))
 }
 
 /// returns all anchors marked with `INSTALLER_DISK`
@@ -299,25 +345,3 @@ fn list_devices() -> Result<Vec<String>> {
     }
     Ok(out)
 }
-
-// #[cfg(test)]
-// mod test {
-//     use std::collections::HashMap;
-
-//     use crate::{get_disko_anchors, replace_disko_devices};
-
-//     #[test]
-//     fn disko_anchor_replace() {
-//         let after = replace_disko_devices(r#"{disko.devices = {disk = {main = {device = "/dev/INSTALLER_DISK_main";};two = {device = "/dev/INSTALLER_DISK_two";};};};}"#.into(),
-//             HashMap::from([("main".into(),"sda".into()),("two".into(),"sdb".into())]));
-//         assert_eq!(after,r#"{disko.devices = {disk = {main = {device = "/dev/sda";};two = {device = "/dev/sdb";};};};}"#.to_owned());
-//     }
-
-//     #[test]
-//     fn disko_anchor_extract() {
-//         let anchors = get_disko_anchors(
-//             r#"{disko.devices = {disk = {main = {device = "/dev/INSTALLER_DISK_main";};two = {device = "/dev/INSTALLER_DISK_two";};};};}"#,
-//         ).unwrap();
-//         assert_eq!(anchors, vec!["main".to_owned(), "two".to_owned()]);
-//     }
-// }

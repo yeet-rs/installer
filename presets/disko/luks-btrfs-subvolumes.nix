@@ -22,9 +22,13 @@
               content = {
                 type = "luks";
                 name = "crypted";
-                askPassword = true;
-                enrollFido2 = true;
-                enrollRecovery = false;
+                # askPassword = true; # if you want to manually input your password
+                # enrollFido2 = true; # enroll you fido-key. can be added later by executing `yeet tpm enroll-fido`
+                # enrollRecovery = false; # (recommended) you can use `enrollFido` in combination with `passwordFile` to skip the recovery
+
+                # creates a new password and the stores it on the new system so that it can be recorded as an artifact
+                # currently only supports a single luks password for all disks. if you need more than that, please create an issue
+                passwordFile = "/INSTALLER_LUKS_PASSWORD";
                 content = {
                   type = "btrfs";
                   extraArgs = [ "-f" ];
