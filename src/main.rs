@@ -2,10 +2,10 @@ use std::{
     collections::{HashMap, HashSet},
     env::args,
     fs::{self, read_to_string},
-    io::{BufRead, BufReader, Write},
+    io::{Write, stdout},
     os::unix::fs::PermissionsExt,
     path::PathBuf,
-    process::{self, Command, Stdio},
+    process::{self, Command},
 };
 
 use color_eyre::{Result, eyre::bail};
@@ -169,8 +169,7 @@ fn manual_preset() -> Result<Vec<String>> {
 
 #[instrument(err)]
 fn run_disko(disko: String) -> Result<()> {
-    let spinner = cliclack::spinner();
-    spinner.start("Formatting...");
+    cliclack::log::info("Formatting...")?;
 
     let path = {
         let mut tmp = NamedTempFile::new()?;
@@ -183,38 +182,14 @@ fn run_disko(disko: String) -> Result<()> {
         path
     };
 
-    let (stdout_read, stdout_write) = std::io::pipe()?;
-    let child = Command::new(path)
-        .stderr(Stdio::piped())
-        .stdout(stdout_write)
-        .spawn()?;
-
-    // start reading the output continously
-    let mut stdout = BufReader::new(stdout_read);
-    // at the end print the whole report
-    let mut message = String::new();
-    loop {
-        let mut line = String::new();
-        if stdout.read_line(&mut line)? == 0 {
-            break;
-        }
-        if line.starts_with("The operation has completed") {
-            continue;
-        }
-        message.push_str(&line);
-        // show what it is currently doing
-        spinner.set_message(&line);
-    }
-    let output = child.wait_with_output()?;
+    let output = Command::new(path).stdout(stdout()).output()?;
 
     if !output.status.success() {
-        spinner.error("Formatting failed");
         cliclack::log::error(String::from_utf8_lossy(&output.stderr))?;
 
         bail!("Disko script did not execute correctly. Aborting");
     }
-    spinner.stop("Formatting successful");
-    cliclack::log::remark(message)?;
+    cliclack::log::success("Formatting successful")?;
 
     Ok(())
 }

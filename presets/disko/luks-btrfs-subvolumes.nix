@@ -22,12 +22,9 @@
               content = {
                 type = "luks";
                 name = "crypted";
-                passwordFile = "/tmp/INSTALLER_LUKS_MAIN"; # Interactive
-                # settings = {
-                #   allowDiscards = true;
-                #   keyFile = "/tmp/secret.key";
-                # };
-                # additionalKeyFiles = [ "/tmp/additionalSecret.key" ];
+                askPassword = true;
+                enrollFido2 = true;
+                enrollRecovery = false;
                 content = {
                   type = "btrfs";
                   extraArgs = [ "-f" ];

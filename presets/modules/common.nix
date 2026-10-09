@@ -24,6 +24,8 @@
     "flakes"
   ];
 
+  users.users.root.initialHashedPassword = "";
+
   documentation = {
     enable = false;
     doc.enable = false;

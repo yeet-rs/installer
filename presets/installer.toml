@@ -1,8 +1,8 @@
 [[presets]]
 modules = ["modules/common.nix", "modules/yeet.nix", "modules/disko.nix", "disko/btrfs-subvolumes.nix"]
-description = "Simple btrfs disk setup without luks"
+description = "Simple btrfs disk setup"
 # default = true
 
 [[presets]]
-modules = ["modules/common.nix", "modules/yeet.nix", "modules/disko.nix", "disko/luksbtrfs-subvolumes.nix"]
-description = "System setup with lanzaboote and luks"
+modules = ["modules/common.nix", "modules/yeet.nix", "modules/disko.nix", "modules/lanzaboote.nix", "disko/luks-btrfs-subvolumes.nix"]
+description = "Secure system with lanzaboote and luks"

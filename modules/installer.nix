@@ -14,7 +14,8 @@ let
       ../presets/modules/disko.nix
       ../presets/modules/yeet.nix
       ../presets/modules/common.nix
-      ../presets/disko/btrfs-subvolumes.nix
+      ../presets/modules/lanzaboote.nix
+      ../presets/disko/luks-btrfs-subvolumes.nix
     ];
   };
 
