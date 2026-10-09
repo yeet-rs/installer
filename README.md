@@ -4,7 +4,11 @@ A fast, friendly, and reliable tool to help you use yeet.
 
 The installer is intended to be used as a stick installer. It can also be booted in a virtual machine.
 
-To flash it to a stick, download the .raw file from the releases page.
+To flash it to a stick, download the .raw file from the releases page and flash it with `caligula` or just use this oneliner (requires caligular):
+
+```shell
+curl -L -o yeet-installer.raw https://github.com/yeet-rs/installer/releases/download/installer/yeet-installer-x86_64-linux.raw && caligula burn yeet-installer.raw -z none -s skip
+```
 
 ## Usage
 
